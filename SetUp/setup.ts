@@ -29,7 +29,7 @@ export async function init(this: Client, id: string, newChat: boolean = false): 
       const content = await response.text()
 
       con = response.statusText == "OK" && content != "there is no history between user and character" ? JSON.parse(content) : content == "there is no history between user and character" ? (console.log("there is no history between user and character, attempting to create one..."), await (await this.req(`https://beta.character.ai/chat/history/create/`, JSON.stringify(ob), 'POST')).json()) : undefined;
-  } catch (e) {throw new Error("Failed to create history")}
+  } catch (e) {throw new Error("something went wrong...")}
     this.historyId  = con.external_id;
     this.character = res.character;
     this.id = this.character.external_id;
