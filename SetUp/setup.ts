@@ -23,12 +23,13 @@ export async function init(this: Client, id: string, newChat: boolean = false): 
     const ob = {
         character_external_id: res.character.external_id, history_external_id: null
     }
+    let con;
+  try {
+      const response = await this.req(`https://beta.character.ai/chat/history/${newChat ? "create" : "continue"}/`, JSON.stringify(ob), 'POST')
+      const content = await response.text()
 
-    const response = await this.req(`https://beta.character.ai/chat/history/${newChat ? "create" : "continue"}/`, JSON.stringify(ob), 'POST')
-    const content = await response.text()
-
-    let con = response.statusText == "OK" &&  content != "there is no history between user and character" ? JSON.parse(content) : content == "there is no history between user and character" ? (console.log("there is no history between user and character, attempting to create one..."),await (await this.req(`https://beta.character.ai/chat/history/create/`, JSON.stringify(ob), 'POST')).json()) : undefined;
-     if (con === undefined) throw new Error("Failed to create history")
+      con = response.statusText == "OK" && content != "there is no history between user and character" ? JSON.parse(content) : content == "there is no history between user and character" ? (console.log("there is no history between user and character, attempting to create one..."), await (await this.req(`https://beta.character.ai/chat/history/create/`, JSON.stringify(ob), 'POST')).json()) : undefined;
+  } catch (e) {throw new Error("Failed to create history")}
     this.historyId  = con.external_id;
     this.character = res.character;
     this.id = this.character.external_id;
