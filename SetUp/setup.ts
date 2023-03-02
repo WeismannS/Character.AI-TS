@@ -19,16 +19,17 @@ export async function init(this: Client, id: string, newChat: boolean = false): 
     if (this.token === undefined) throw new Error("Token not set");
     const res = await (await this.req(`https://beta.character.ai/chat/character/info-cached/${id}/`, '', 'GET')).json().catch(console.log) as { character: Character }
     if (!validate(res?.character, 'name')) throw new Error("Failed to validate, not initiated")
-    if (!newChat) {
-        const ob = {
-            character_external_id: res.character.external_id,
-            history_external_id: null
-        }
-        const con = await (await this.req('https://beta.character.ai/chat/history/continue/',JSON.stringify(ob),'POST')).json().catch(() => {
-            throw new Error("Could not find History")
-        }) as { external_id: string };
-        this.historyId = con.external_id;
+
+    const ob = {
+        character_external_id: res.character.external_id, history_external_id: null
     }
+
+    const response = await this.req(`https://beta.character.ai/chat/history/${newChat ? "create" : "continue"}/`, JSON.stringify(ob), 'POST')
+    const content = await response.text()
+
+    let con = response.statusText == "OK" &&  content != "there is no history between user and character" ? JSON.parse(content) : content == "there is no history between user and character" ? (console.log("there is no history between user and character, attempting to create one..."),await (await this.req(`https://beta.character.ai/chat/history/create/`, JSON.stringify(ob), 'POST')).json()) : undefined;
+     if (con === undefined) throw new Error("Failed to create history")
+    this.historyId  = con.external_id;
     this.character = res.character;
     this.id = this.character.external_id;
     this.initialized = true;
@@ -41,8 +42,7 @@ function validate(object: any, s: string): object is Character | User {
 }
 
 
-
-export let request = async function (this: Client, url: string, body: string , method: string, token?: string | null) {
+export let request = async function (this: Client, url: string, body: string, method: string, token?: string | null) {
     return await fetch(url, {
         "headers": {
             "accept": "application/json, text/plain, */*",
@@ -59,8 +59,7 @@ export let request = async function (this: Client, url: string, body: string , m
             "Referer": "https://beta.character.ai/chat?char=RQrrOj-UNdEV2_PC5D03US-27MZ7EUtaRH_husjbRQA",
             "Referrer-Policy": "same-origin"
 
-        },
-        "body": body,
+        }, "body": body,
 
         "method": method
     })

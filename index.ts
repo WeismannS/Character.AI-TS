@@ -10,11 +10,11 @@ class Client {
     me: User | undefined;
     historyId : string ='';
     Login: (token: string) => Promise<Object>
-    init: (this: any, id: string) => Promise<Character>;
+    init: (this: any, id: string, b: boolean) => Promise<Character>;
 
 
     req : (url:string,body:string,method:string,token?:string|null)=>Promise<Response>
-    sendMsg : (msg:string)=>Promise<string>
+    sendMsg : (this: Client, msg: string) => Promise<Msg>
     constructor() {
         this.req = request.bind(this);
         this.Login = Login;
@@ -22,6 +22,15 @@ class Client {
         this.sendMsg = sendMsg;
     }
 
+}
+
+export class Msg {
+    constructor(public content: string, public author: string, public id: string, public avatar: string) {
+           this.content = content;
+            this.author = author;
+            this.id = id;
+            this.avatar = "https://characterai.io/i/80/static/avatars/"+avatar;
+    }
 }
 
 export default Client;

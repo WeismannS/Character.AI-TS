@@ -1,6 +1,6 @@
-import Client from "../index.js";
+import Client,{Msg} from "../index.js";
 
-export async function sendMsg(this: Client, msg: string): Promise<string> {
+export async function sendMsg(this: Client, msg: string): Promise<Msg> {
     if (!this.initialized) throw new Error("Client not initialized");
     const ob = {
         history_external_id: this.historyId,
@@ -35,9 +35,13 @@ export async function sendMsg(this: Client, msg: string): Promise<string> {
         num_candidates: 1,
         give_room_introductions: true
     }
-    const res = await (await this.req('https://beta.character.ai/chat/streaming/', JSON.stringify(ob), 'POST')).text().catch(() => {
+    const res = await (await this.req('https://beta.character.ai/chat/streaming/', JSON.stringify(ob), 'POST')).text()
+    try{
+      const finalChunk =   JSON.parse(<string>res.split("\n").find(e => JSON.parse(e).is_final_chunk == true))
+         return new Msg(finalChunk.replies[0].text, finalChunk.src_char.participant.name, finalChunk.replies[0].id, finalChunk.src_char.avatar_file_name)
+    } catch (e) {
         throw new Error("Could not send message")
-    }) as string ;
-    return JSON.parse(<string>res.split("\n").find(e => JSON.parse(e).is_final_chunk == true)).replies[0].text;
+    }
+
 }
 
