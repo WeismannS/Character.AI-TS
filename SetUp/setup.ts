@@ -1,5 +1,6 @@
 import {Character, User} from "./@types.js";
 import Client from "../index.js";
+import {getReplies} from "./Functions.js";
 
 export async function Login(this: Client, token: string): Promise<Object> {
 
@@ -16,7 +17,7 @@ export async function Login(this: Client, token: string): Promise<Object> {
 
 
 export async function init(this: Client, id: string, newChat: boolean = false): Promise<Character> {
-    if (this.token === undefined) throw new Error("Token not set");
+    if (this.token === undefined)  await Promise.reject("Token Not Set");
     const res = await (await this.req(`https://beta.character.ai/chat/character/info-cached/${id}/`, '', 'GET')).json().catch(console.log) as { character: Character }
     if (!validate(res?.character, 'name')) throw new Error("Failed to validate, not initiated")
 
@@ -41,11 +42,7 @@ function validate(object: any, s: string): object is Character | User {
     if (object === undefined) return false;
     return s in object;
 }
- async function getReplies(this: Client, id: string): Promise<Object|undefined> {
-    const res = await this.req(`https://beta.character.ai/chat/history/msgs/user/?history_external_id=${id}`, '', 'GET') as Response;
-    //@ts-ignore
-    return <Object|undefined> (await res.json().catch(()=>undefined))?.messages
-}
+
 export let request = async function (this: Client, url: string, body: string, method: string, token?: string | null) {
     return await fetch(url, {
         "headers": {

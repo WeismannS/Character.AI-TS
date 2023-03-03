@@ -44,4 +44,9 @@ export async function sendMsg(this: Client, msg: string): Promise<Msg> {
 
 }
 
+export async function getReplies(this: Client, id: string): Promise<Object|undefined> {
+    const res = await this.req(`https://beta.character.ai/chat/history/msgs/user/?history_external_id=${id}`, '', 'GET') as Response;
+    //@ts-ignore
+    return <Object|undefined> (await res.json().catch(()=>undefined))?.messages
+}
 
