@@ -1,6 +1,6 @@
 import {Character, User} from "./@types.js";
 import Client from "../index.js";
-import {getReplies} from "./Functions.js";
+import {getHistory} from "./Functions.js";
 
 export async function Login(this: Client, token: string): Promise<Object> {
 
@@ -30,7 +30,7 @@ export async function init(this: Client, id: string, newChat: boolean = false): 
         const con = response.statusText == "OK" && content != "there is no history between user and character" ? JSON.parse(content) : content == "there is no history between user and character" ? (console.log("there is no history between user and character, attempting to create one..."), await (await this.req(`https://beta.character.ai/chat/history/create/`, JSON.stringify(ob), 'POST')).json()) : undefined;
         this.historyId  = con.external_id;
     } catch (e) {throw new Error("something went wrong...")}
-    this.replies = await getReplies.bind(this)(this.historyId)
+    this.history = await getHistory.bind(this)(this.historyId)
     this.character = res.character;
     this.id = this.character.external_id;
     this.initialized = true;

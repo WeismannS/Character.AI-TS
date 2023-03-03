@@ -14,7 +14,7 @@ class Client {
 
     req : (url:string,body:string,method:string,token?:string|null)=>Promise<Response>
     sendMsg : (this: Client, msg: string) => Promise<Msg>
-     replies: Object | undefined
+     history: Object | undefined
     constructor() {
         this.req = request.bind(this);
         this.Login = Login;
@@ -25,7 +25,7 @@ class Client {
 }
 
 export class Msg {
-    constructor(public content: string, public author: Character | undefined, public id: string, public avatar: string) {
+    constructor(public content: string, public author: string , public id: string, public avatar: string) {
            this.content = content;
             this.author = author;
             this.id = id;

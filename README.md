@@ -21,7 +21,7 @@ the default of the second arg of ``innit`` is false, will start a new chat if it
 ```js
 const character = await client.innit("characterId",true) // returns a Character and sets client's current character to it 
 const msg = await client.sendMsg("Hello!") // returns a Message Object
-const History = client.replies // Chat History
+const History = client.History // Chat History
 ```
 
 This project was created using `bun init` in bun v0.5.7. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

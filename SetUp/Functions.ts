@@ -39,14 +39,12 @@ export async function sendMsg(this: Client, msg: string): Promise<Msg> {
 
     const res = await (await this.req('https://beta.character.ai/chat/streaming/', JSON.stringify(ob), 'POST')).text()
       const finalChunk =   JSON.parse(<string>res.split("\n").find(e => JSON.parse(e).is_final_chunk == true))
-         return new Msg(finalChunk.replies[0].text, this.character, finalChunk.replies[0].id, finalChunk.src_char.avatar_file_name)
-
-
+         return new Msg(finalChunk.replies[0].text,finalChunk.src_char.participant.name, finalChunk.replies[0].id, finalChunk.src_char.avatar_file_name)
 }
 
-export async function getReplies(this: Client, id: string): Promise<Object|undefined> {
+export async function getHistory(this: Client, id: string): Promise<Object|undefined> {
     const res = await this.req(`https://beta.character.ai/chat/history/msgs/user/?history_external_id=${id}`, '', 'GET') as Response;
     //@ts-ignore
-    return <Object|undefined> (await res.json().catch(()=>undefined))?.messages
+    return <Object|undefined> (await res.json().catch(()=>undefined))?.messages.map(e=>new Msg(e.text,e.src__name,e.id,e.src__character__avatar_file_name))
 }
 
