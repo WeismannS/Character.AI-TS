@@ -1,5 +1,5 @@
 {
-  "name": "character.AI",
+  "name": "character.ai",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
