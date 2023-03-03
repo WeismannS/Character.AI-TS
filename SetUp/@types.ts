@@ -1,4 +1,3 @@
-
 export interface Character {
     external_id: string;
     title: string;
@@ -21,14 +20,15 @@ export interface Character {
     voice_id: string;
     usage: string;
 }
- interface Account {
+
+interface Account {
     name: string;
     avatar_type: string;
     onboarding_complete: boolean;
     avatar_file_name: string;
 }
 
- interface User2 {
+interface User2 {
     username: string;
     id: number;
     first_name: string;
@@ -42,4 +42,16 @@ export interface User {
     name: string;
     hidden_characters: any[];
     blocked_users: any[];
+}
+
+export interface search {
+    title: string;
+    description: string;
+    avatar_file_name: string;
+    external_id: string;
+    participant__name: string;
+    search_score: number;
+    greeting: string;
+
+    user__username : string
 }

@@ -1,21 +1,23 @@
-import {init, Login,request} from "./SetUp/setup.js";
-import {Character, User} from "./SetUp/@types.js";
-import {sendMsg} from "./SetUp/Functions.js";
+import {init, Login, request} from "./SetUp/setup.js";
+import {Character, User,search} from "./SetUp/@types.js";
+import {sendMsg,lookFor} from "./SetUp/Functions.js";
 
 class Client {
     token: string | undefined;
     initialized: boolean = false;
     id: string = '';
-    character: Character | undefined ;
+    character: Character | undefined;
     me: User | undefined;
-    historyId : string ='';
+    historyId: string = '';
     Login: (token: string) => Promise<Object>
     init: (this: any, id: string, b?: boolean) => Promise<Character>;
+    lookFor: (this: Client, name: string) => Promise<Array<any>>;
+    req: (url: string, body: string, method: string, token?: string | null) => Promise<Response>
+    sendMsg: (this: Client, msg: string) => Promise<Msg>
+    history: Object | undefined
 
-    req : (url:string,body:string,method:string,token?:string|null)=>Promise<Response>
-    sendMsg : (this: Client, msg: string) => Promise<Msg>
-     history: Object | undefined
     constructor() {
+        this.lookFor = lookFor.bind(this);
         this.req = request.bind(this);
         this.Login = Login;
         this.init = init;
@@ -25,12 +27,33 @@ class Client {
 }
 
 export class Msg {
-    constructor(public content: string, public author: string , public id: string, public avatar: string) {
-           this.content = content;
-            this.author = author;
-            this.id = id;
-            this.avatar = "https://characterai.io/i/80/static/avatars/"+avatar;
+    constructor(public content: string, public author: string, public id: string, public avatar: string) {
+        this.content = content;
+        this.author = author;
+        this.id = id;
+        this.avatar = "https://characterai.io/i/80/static/avatars/" + avatar;
     }
+}
+export class char{
+     name: string;
+     score: any;
+     description: string;
+     avatar: string;
+     id: string;
+     greeting: string;
+     title: string;
+     author: string;
+    constructor({participant__name, external_id,user__username, description,greeting,search_score,avatar_file_name,title}:search) {
+        this.name = participant__name;
+        this.id = external_id;
+        this.avatar = "https://characterai.io/i/80/static/avatars/" +avatar_file_name;
+        this.description = description
+        this.greeting = greeting;
+        this.score = search_score;
+        this.title = title;
+        this.author = user__username;
+    }
+
 }
 
 export default Client;

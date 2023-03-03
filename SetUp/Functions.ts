@@ -1,4 +1,5 @@
-import Client,{Msg} from "../index.js";
+import Client, {Msg} from "../index.js";
+import {char} from "../index.js";
 
 export async function sendMsg(this: Client, msg: string): Promise<Msg> {
     if (!this.initialized) throw new Error("Client not initialized");
@@ -38,15 +39,25 @@ export async function sendMsg(this: Client, msg: string): Promise<Msg> {
 
 
     const res = await (await this.req('https://beta.character.ai/chat/streaming/', JSON.stringify(ob), 'POST')).text()
-      const finalChunk =   JSON.parse(<string>res.split("\n").find(e => JSON.parse(e).is_final_chunk == true))
-         return new Msg(finalChunk.replies[0].text,finalChunk.src_char.participant.name, finalChunk.replies[0].id, finalChunk.src_char.avatar_file_name)
+    const finalChunk = JSON.parse(<string>res.split("\n").find(e => JSON.parse(e).is_final_chunk == true))
+    return new Msg(finalChunk.replies[0].text, finalChunk.src_char.participant.name, finalChunk.replies[0].id, finalChunk.src_char.avatar_file_name)
 }
 
 export async function getHistory(this: Client, id: string): Promise<Object> {
     const res = await this.req(`https://beta.character.ai/chat/history/msgs/user/?history_external_id=${id}`, '', 'GET') as Response;
 
-    return  (<{ messages:Array<any> }> await res.json().catch(()=> {
+    return (<{ messages: Array<any> }>await res.json().catch(() => {
         throw new Error("Something went wrong..")
-    })).messages.map(e=>new Msg(e.text,e.src__name,e.id,!e.src__is_human ? e.src_char.avatar_file_name: this.me!.user.account.avatar_file_name))
+    })).messages.map(e => new Msg(e.text, e.src__name, e.id, !e.src__is_human ? e.src_char.avatar_file_name : this.me!.user.account.avatar_file_name))
 }
 
+export async  function lookFor(this: Client, name: string): Promise<Array<any>> {
+    const res = await this.req(`https://beta.character.ai/chat/characters/search/?query=${name}`,'', 'GET') as Response;
+    const data = await res.json().catch((e) => {
+        Promise.reject(e)
+        return
+    }) as { characters: Array<any> }
+    if (data == undefined) return []
+
+    return data.characters.map(e => new char(e))
+}
