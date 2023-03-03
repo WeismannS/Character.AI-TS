@@ -3,10 +3,9 @@ import Client from "./index.js";
 
 let client: any =  new  Client()
  await client.Login("");
-await client.init("Zu1LhuTYHLXWjgdeBgVlIt1iF6c2v9Awi-at80CMQMc")
+await client.init("po3xAPVaEXMN_dI7MVksGndLGNTcMlWo64Z2SekgGDg")
 
-console.log(await client.sendMsg("Hello"))
-
+console.log(await client.history)
 
 
 
