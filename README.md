@@ -14,7 +14,7 @@ const  Client  = require('character.ai').default;
 import  Client  from 'character.ai';
 
 let client = new Client()
-client = client.Loggin("token") // both returns a new client with token and logs in in place
+client = client.Login("token") // both returns a new client with token and logs in in place
 ```
 the default of the second arg of ``innit`` is false, will start a new chat if it set to true, if there is no previous history between character and client it will create one
 
