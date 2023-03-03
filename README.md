@@ -8,9 +8,6 @@ Unofficial Javascript/Typescript Wrapper for character.ai
 
 Initialize a Client and Login
 ```js
-// CommonJS
-const  Log_in  = require('character.ai').default;
-//ESM
 import  Log_in,{Client}  from 'character.ai';
 
 let client:Client = await Log_in("token") // returns the Client
