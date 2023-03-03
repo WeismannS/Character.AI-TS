@@ -1,5 +1,4 @@
-import Client, {Msg} from "../index.js";
-import {char} from "../index.js";
+import  {Client,char, Msg} from "../index.js";
 
 export async function sendMsg(this: Client, msg: string): Promise<Msg> {
     if (!this.initialized) throw new Error("Client not initialized");
@@ -43,7 +42,7 @@ export async function sendMsg(this: Client, msg: string): Promise<Msg> {
     return new Msg(finalChunk.replies[0].text, finalChunk.src_char.participant.name, finalChunk.replies[0].id, finalChunk.src_char.avatar_file_name)
 }
 
-export async function getHistory(this: Client, id: string): Promise<Object> {
+export async function getHistory(this: Client, id: string): Promise<Msg[]> {
     const res = await this.req(`https://beta.character.ai/chat/history/msgs/user/?history_external_id=${id}`, '', 'GET') as Response;
 
     return (<{ messages: Array<any> }>await res.json().catch(() => {
@@ -51,13 +50,13 @@ export async function getHistory(this: Client, id: string): Promise<Object> {
     })).messages.map(e => new Msg(e.text, e.src__name, e.id, !e.src__is_human ? e.src_char.avatar_file_name : this.me!.user.account.avatar_file_name))
 }
 
-export async  function lookFor(this: Client, name: string): Promise<Array<any>> {
+export async  function lookFor(this: Client, name: string,sortBy:string=''): Promise<Array<char>> {
     const res = await this.req(`https://beta.character.ai/chat/characters/search/?query=${name}`,'', 'GET') as Response;
     const data = await res.json().catch((e) => {
         Promise.reject(e)
         return
     }) as { characters: Array<any> }
     if (data == undefined) return []
-
-    return data.characters.map(e => new char(e))
+    const index = sortBy=="interactions"? sortBy:"score"
+    return data.characters.map(e => new char(e)).sort((a,b)=>a[index]-b[index])
 }

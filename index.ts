@@ -1,25 +1,24 @@
-import {init, Login, request} from "./SetUp/setup.js";
+import {init, request,validate} from "./SetUp/setup.js";
 import {Character, User,search} from "./SetUp/@types.js";
 import {sendMsg,lookFor} from "./SetUp/Functions.js";
 
-class Client {
+export class Client {
     token: string | undefined;
     initialized: boolean = false;
     id: string = '';
     character: Character | undefined;
     me: User | undefined;
     historyId: string = '';
-    Login: (token: string) => Promise<Object>
+
     init: (this: any, id: string, b?: boolean) => Promise<Character>;
-    lookFor: (this: Client, name: string) => Promise<Array<any>>;
+    lookFor: (this: Client, name: string, sortBy: string) => Promise<Array<any>>;
     req: (url: string, body: string, method: string, token?: string | null) => Promise<Response>
     sendMsg: (this: Client, msg: string) => Promise<Msg>
-    history: Object | undefined
+    history: Array<Msg> = [];
 
     constructor() {
         this.lookFor = lookFor.bind(this);
         this.req = request.bind(this);
-        this.Login = Login;
         this.init = init;
         this.sendMsg = sendMsg;
     }
@@ -43,7 +42,8 @@ export class char{
      greeting: string;
      title: string;
      author: string;
-    constructor({participant__name, external_id,user__username, description,greeting,search_score,avatar_file_name,title}:search) {
+     interactions: number;
+    constructor({participant__name, external_id,user__username, description,greeting,search_score,avatar_file_name,title,participant__num_interactions}:search) {
         this.name = participant__name;
         this.id = external_id;
         this.avatar = "https://characterai.io/i/80/static/avatars/" +avatar_file_name;
@@ -52,8 +52,20 @@ export class char{
         this.score = search_score;
         this.title = title;
         this.author = user__username;
+        this.interactions = participant__num_interactions;
     }
 
 }
 
-export default Client;
+export default async function Log_in( token: string): Promise<Client> {
+
+    const res = await (await request("https://beta.character.ai/chat/user/", '', 'GET', token)).json().catch(console.error) as { user: User };
+    const user: User = res.user;
+    if (!validate(res, 'user') || user.user.username == "ANONYMOUS") {
+        throw new Error("Failed to fetch user| Token may be invalid")
+    }
+    const client = new Client();
+    client.token = token;
+    client.me = user;
+    return client ;
+}

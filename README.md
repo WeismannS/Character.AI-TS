@@ -9,19 +9,28 @@ Unofficial Javascript/Typescript Wrapper for character.ai
 Initialize a Client and Login
 ```js
 // CommonJS
-const  Client  = require('character.ai').default;
+const  Log_in  = require('character.ai').default;
 //ESM
-import  Client  from 'character.ai';
+import  Log_in,{Client}  from 'character.ai';
 
-let client = new Client()
-client = client.Login("token") // both returns a new client with token and logs in in place
+let client:Client = await Log_in("token") // returns the Client
 ```
 the default of the second arg of ``innit`` is false, will start a new chat if it set to true, if there is no previous history between character and client it will create one
 
 ```js
 const character = await client.innit("characterId",true) // returns a Character and sets client's current character to it 
-const msg = await client.sendMsg("Hello!") // returns a Message Object
-const History = client.history // Chat History
+const msg :Msg = await client.sendMsg("Hello!") // returns a Message Object
+const History : Array<Msg> = client.history // returns an Array of Messages
 ```
+to get user info
+```js
+const user = client.me // returns a User Object
+```
+lookFor returns an Array of Characters that has the same name as the first arg 
+the second argument sorts the array by the amount of interactions the characters has, the default is "score"
+```js
+const characters : Array<char> = await client.lookFor("characterName","interactions") // returns an Array of Characters
+````
+
 
 This project was created using `bun init` in bun v0.5.7. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

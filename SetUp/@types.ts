@@ -52,6 +52,6 @@ export interface search {
     participant__name: string;
     search_score: number;
     greeting: string;
-
+    participant__num_interactions: number;
     user__username : string
 }
