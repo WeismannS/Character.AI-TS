@@ -23,26 +23,29 @@ export async function init(this: Client, id: string, newChat: boolean = false): 
     const ob = {
         character_external_id: res.character.external_id, history_external_id: null
     }
-    let con;
-  try {
-      const response = await this.req(`https://beta.character.ai/chat/history/${newChat ? "create" : "continue"}/`, JSON.stringify(ob), 'POST')
-      const content = await response.text()
-
-      con = response.statusText == "OK" && content != "there is no history between user and character" ? JSON.parse(content) : content == "there is no history between user and character" ? (console.log("there is no history between user and character, attempting to create one..."), await (await this.req(`https://beta.character.ai/chat/history/create/`, JSON.stringify(ob), 'POST')).json()) : undefined;
-  } catch (e) {throw new Error("something went wrong...")}
-    this.historyId  = con.external_id;
+    try {
+        const response = await this.req(`https://beta.character.ai/chat/history/${newChat ? "create" : "continue"}/`, JSON.stringify(ob), 'POST')
+        const content = await response.text()
+        const con = response.statusText == "OK" && content != "there is no history between user and character" ? JSON.parse(content) : content == "there is no history between user and character" ? (console.log("there is no history between user and character, attempting to create one..."), await (await this.req(`https://beta.character.ai/chat/history/create/`, JSON.stringify(ob), 'POST')).json()) : undefined;
+        this.historyId  = con.external_id;
+    } catch (e) {throw new Error("something went wrong...")}
+    this.replies = await getReplies.bind(this)(this.historyId)
     this.character = res.character;
     this.id = this.character.external_id;
     this.initialized = true;
     return this.character;
 }
 
+
 function validate(object: any, s: string): object is Character | User {
     if (object === undefined) return false;
     return s in object;
 }
-
-
+ async function getReplies(this: Client, id: string): Promise<Object|undefined> {
+    const res = await this.req(`https://beta.character.ai/chat/history/msgs/user/?history_external_id=${id}`, '', 'GET') as Response;
+    //@ts-ignore
+    return <Object|undefined> (await res.json().catch(()=>undefined))?.messages
+}
 export let request = async function (this: Client, url: string, body: string, method: string, token?: string | null) {
     return await fetch(url, {
         "headers": {

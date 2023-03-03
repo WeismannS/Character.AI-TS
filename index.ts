@@ -6,15 +6,15 @@ class Client {
     token: string | undefined;
     initialized: boolean = false;
     id: string = '';
-    character: Character | undefined;
+    character: Character | undefined ;
     me: User | undefined;
     historyId : string ='';
     Login: (token: string) => Promise<Object>
-    init: (this: any, id: string, b: boolean) => Promise<Character>;
-
+    init: (this: any, id: string, b?: boolean) => Promise<Character>;
 
     req : (url:string,body:string,method:string,token?:string|null)=>Promise<Response>
     sendMsg : (this: Client, msg: string) => Promise<Msg>
+     replies: Object | undefined
     constructor() {
         this.req = request.bind(this);
         this.Login = Login;
@@ -25,7 +25,7 @@ class Client {
 }
 
 export class Msg {
-    constructor(public content: string, public author: string, public id: string, public avatar: string) {
+    constructor(public content: string, public author: Character | undefined, public id: string, public avatar: string) {
            this.content = content;
             this.author = author;
             this.id = id;

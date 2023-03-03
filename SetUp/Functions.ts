@@ -35,13 +35,13 @@ export async function sendMsg(this: Client, msg: string): Promise<Msg> {
         num_candidates: 1,
         give_room_introductions: true
     }
+
+
     const res = await (await this.req('https://beta.character.ai/chat/streaming/', JSON.stringify(ob), 'POST')).text()
-    try{
       const finalChunk =   JSON.parse(<string>res.split("\n").find(e => JSON.parse(e).is_final_chunk == true))
-         return new Msg(finalChunk.replies[0].text, finalChunk.src_char.participant.name, finalChunk.replies[0].id, finalChunk.src_char.avatar_file_name)
-    } catch (e) {
-        throw new Error("Could not send message")
-    }
+         return new Msg(finalChunk.replies[0].text, this.character, finalChunk.replies[0].id, finalChunk.src_char.avatar_file_name)
+
 
 }
+
 
