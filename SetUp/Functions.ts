@@ -1,4 +1,4 @@
-import  {Client,char, Msg} from "../index.js";
+import {char, Client, Msg} from "../index.js";
 
 export async function sendMsg(this: Client, msg: string): Promise<Msg> {
     if (!this.initialized) throw new Error("Client not initialized");
@@ -50,13 +50,13 @@ export async function getHistory(this: Client, id: string): Promise<Msg[]> {
     })).messages.map(e => new Msg(e.text, e.src__name, e.id, !e.src__is_human ? e.src_char.avatar_file_name : this.me!.user.account.avatar_file_name))
 }
 
-export async  function lookFor(this: Client, name: string,sortBy:string=''): Promise<Array<char>> {
-    const res = await this.req(`https://beta.character.ai/chat/characters/search/?query=${name}`,'', 'GET') as Response;
+export async function lookFor(this: Client, name: string, sortBy: string = ''): Promise<Array<char>> {
+    const res = await this.req(`https://beta.character.ai/chat/characters/search/?query=${name}`, '', 'GET') as Response;
     const data = await res.json().catch((e) => {
         Promise.reject(e)
         return
     }) as { characters: Array<any> }
     if (data == undefined) return []
-    const index = sortBy=="interactions"? sortBy:"score"
-    return data.characters.map(e => new char(e)).sort((a,b)=>a[index]-b[index])
+    const index = sortBy == "interactions" ? sortBy : "score"
+    return data.characters.map(e => new char(e)).sort((a, b) => a[index] - b[index])
 }

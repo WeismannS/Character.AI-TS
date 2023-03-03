@@ -4,7 +4,7 @@ import {getHistory} from "./Functions.js";
 
 
 export async function init(this: Client, id: string, newChat: boolean = false): Promise<Character> {
-    if (this.token === undefined)  await Promise.reject("Token Not Set");
+    if (this.token === undefined) await Promise.reject("Token Not Set");
     const res = await (await this.req(`https://beta.character.ai/chat/character/info-cached/${id}/`, '', 'GET')).json().catch(console.log) as { character: Character }
     if (!validate(res?.character, 'name')) throw new Error("Failed to validate, not initiated")
 
@@ -15,8 +15,10 @@ export async function init(this: Client, id: string, newChat: boolean = false): 
         const response = await this.req(`https://beta.character.ai/chat/history/${newChat ? "create" : "continue"}/`, JSON.stringify(ob), 'POST')
         const content = await response.text()
         const con = response.statusText == "OK" && content != "there is no history between user and character" ? JSON.parse(content) : content == "there is no history between user and character" ? (console.log("there is no history between user and character, attempting to create one..."), await (await this.req(`https://beta.character.ai/chat/history/create/`, JSON.stringify(ob), 'POST')).json()) : undefined;
-        this.historyId  = con.external_id;
-    } catch (e) {throw new Error("something went wrong...")}
+        this.historyId = con.external_id;
+    } catch (e) {
+        throw new Error("something went wrong...")
+    }
     this.history = await getHistory.bind(this)(this.historyId)
     this.character = res.character;
     this.id = this.character.external_id;
@@ -30,7 +32,7 @@ export function validate(object: any, s: string): object is Character | User {
     return s in object;
 }
 
-export let request = async function (this: Client|void, url: string, body: string, method: string, token?: string | null) {
+export let request = async function (this: Client | void, url: string, body: string, method: string, token?: string | null) {
     return await fetch(url, {
         "headers": {
             "accept": "application/json, text/plain, */*",

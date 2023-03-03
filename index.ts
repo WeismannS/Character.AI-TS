@@ -1,6 +1,6 @@
-import {init, request,validate} from "./SetUp/setup.js";
-import {Character, User,search} from "./SetUp/@types.js";
-import {sendMsg,lookFor} from "./SetUp/Functions.js";
+import {init, request, validate} from "./SetUp/setup.js";
+import {Character, search, User} from "./SetUp/@types.js";
+import {lookFor, sendMsg} from "./SetUp/Functions.js";
 
 export class Client {
     token: string | undefined;
@@ -33,20 +33,32 @@ export class Msg {
         this.avatar = "https://characterai.io/i/80/static/avatars/" + avatar;
     }
 }
-export class char{
-     name: string;
-     score: any;
-     description: string;
-     avatar: string;
-     id: string;
-     greeting: string;
-     title: string;
-     author: string;
-     interactions: number;
-    constructor({participant__name, external_id,user__username, description,greeting,search_score,avatar_file_name,title,participant__num_interactions}:search) {
+
+export class char {
+    name: string;
+    score: any;
+    description: string;
+    avatar: string;
+    id: string;
+    greeting: string;
+    title: string;
+    author: string;
+    interactions: number;
+
+    constructor({
+                    participant__name,
+                    external_id,
+                    user__username,
+                    description,
+                    greeting,
+                    search_score,
+                    avatar_file_name,
+                    title,
+                    participant__num_interactions
+                }: search) {
         this.name = participant__name;
         this.id = external_id;
-        this.avatar = "https://characterai.io/i/80/static/avatars/" +avatar_file_name;
+        this.avatar = "https://characterai.io/i/80/static/avatars/" + avatar_file_name;
         this.description = description
         this.greeting = greeting;
         this.score = search_score;
@@ -57,7 +69,7 @@ export class char{
 
 }
 
-export default async function Log_in( token: string): Promise<Client> {
+export default async function Log_in(token: string): Promise<Client> {
 
     const res = await (await request("https://beta.character.ai/chat/user/", '', 'GET', token)).json().catch(console.error) as { user: User };
     const user: User = res.user;
@@ -67,5 +79,5 @@ export default async function Log_in( token: string): Promise<Client> {
     const client = new Client();
     client.token = token;
     client.me = user;
-    return client ;
+    return client;
 }

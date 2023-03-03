@@ -53,5 +53,5 @@ export interface search {
     search_score: number;
     greeting: string;
     participant__num_interactions: number;
-    user__username : string
+    user__username: string
 }
