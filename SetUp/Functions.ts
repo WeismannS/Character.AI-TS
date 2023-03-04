@@ -1,4 +1,4 @@
-import {char, Client, Msg} from "../index.js";
+import {char, Client, Msg} from "../index.ts";
 
 export async function sendMsg(this: Client, msg: string): Promise<Msg> {
     if (!this.initialized) throw new Error("Client not initialized");

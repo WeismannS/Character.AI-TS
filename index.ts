@@ -1,6 +1,6 @@
-import {init, request, validate} from "./SetUp/setup.js";
-import {Character, search, User} from "./SetUp/@types.js";
-import {lookFor, sendMsg} from "./SetUp/Functions.js";
+import {init, request, validate} from "./SetUp/setup.ts";
+import {Character, search, User} from "./SetUp/@types.ts";
+import {lookFor, sendMsg} from "./SetUp/Functions.ts";
 
 export class Client {
     token: string | undefined;

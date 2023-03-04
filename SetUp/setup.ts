@@ -1,6 +1,6 @@
-import {Character, User} from "./@types.js";
-import {Client} from "../index.js";
-import {getHistory} from "./Functions.js";
+import {Character, User} from "./@types.ts";
+import {Client} from "../index.ts";
+import {getHistory} from "./Functions.ts";
 
 
 export async function init(this: Client, id: string, newChat: boolean = false): Promise<Character> {
@@ -32,7 +32,7 @@ export function validate(object: any, s: string): object is Character | User {
     return s in object;
 }
 
-export let request = async function (this: Client | void, url: string, body: string, method: string, token?: string | null) {
+export const request = async function (this: Client | void, url: string, body: string, method: string, token?: string | null) {
     return await fetch(url, {
         "headers": {
             "accept": "application/json, text/plain, */*",
@@ -48,7 +48,7 @@ export let request = async function (this: Client | void, url: string, body: str
             "Referer": "https://beta.character.ai/chat?char=RQrrOj-UNdEV2_PC5D03US-27MZ7EUtaRH_husjbRQA",
             "Referrer-Policy": "same-origin"
 
-        }, "body": body,
+        }, "body": body?.length > 0 ? body : undefined,
 
         "method": method
     })
