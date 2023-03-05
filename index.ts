@@ -1,5 +1,5 @@
 import {init, request, validate} from "./SetUp/setup.ts";
-import {Character, search, User} from "./SetUp/@types.ts";
+import {Character, search, User} from "./SetUp/@types.d.ts";
 import {lookFor, sendMsg} from "./SetUp/Functions.ts";
 
 export class Client {
@@ -10,7 +10,7 @@ export class Client {
     me: User | undefined;
     historyId: string = '';
 
-    init: (this: any, id: string, b?: boolean) => Promise<Character>;
+    init: (this: Client, id: string, b?: boolean) => Promise<Character>;
     lookFor: (this: Client, name: string, sortBy: string) => Promise<Array<any>>;
     req: (url: string, body: string, method: string, token?: string | null) => Promise<Response>
     sendMsg: (this: Client, msg: string) => Promise<Msg>

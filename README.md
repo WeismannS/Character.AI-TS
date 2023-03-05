@@ -15,7 +15,7 @@ let client:Client = await Log_in("token") // returns the Client
 the default of the second arg of ``innit`` is false, will start a new chat if it set to true, if there is no previous history between character and client it will create one
 
 ```js
-const character = await client.innit("characterId",true) // returns a Character and sets client's current character to it 
+const character = await client.init("characterId",true) // returns a Character and sets client's current character to it 
 const msg :Msg = await client.sendMsg("Hello!") // returns a Message Object
 const History : Array<Msg> = client.history // returns an Array of Messages
 ```

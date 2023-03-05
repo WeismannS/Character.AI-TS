@@ -1,4 +1,4 @@
-import {Character, User} from "./@types.ts";
+import {Character, User} from "./@types.d.ts";
 import {Client} from "../index.ts";
 import {getHistory} from "./Functions.ts";
 

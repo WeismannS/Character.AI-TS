@@ -1,12 +1,28 @@
 {
   "name": "character.ai-ts",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Unofficial Javascript/Typescript wrapper for character.ai",
   "module": "dist/index.js",
   "type": "module",
   "types": "dist/SetUp/@types.d.ts",
   "author": "Weismann",
   "main": "dist/index.js",
+  "keywords": [
+    "Genshin impact",
+    "Achievement",
+    "Genshin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WeismannS/character.ai-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WeismannS/character.ai-ts/issues"
+  },
+  "homepage": "https://github.com/WeismannS/character.ai-ts#readme",
+  "files": [
+    "dist"
+  ],
   "license": "GNU",
   "devDependencies": {
     "bun-types": "^0.5.0",
