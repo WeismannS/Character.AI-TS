@@ -6,6 +6,8 @@ Unofficial Javascript/Typescript Wrapper for character.ai
 
 - [Getting started](https://github.com/WeismannS/Character.AI-JS/wiki)
 
+**AS OF 3/14/2023** This seems to only work for Buns
+
 Initialize a Client and Login
 ```js
 import  Log_in,{Client}  from 'character.ai';
